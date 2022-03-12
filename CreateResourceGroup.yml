@@ -1,5 +1,4 @@
 - hosts: localhost
-- hosts: localhost
   connection: local
 
   tasks:
@@ -20,3 +19,4 @@
       name: workload-subnet
       address_prefixes: "172.16.1.0/24"
       virtual_network: ansibleVnet
+ 
