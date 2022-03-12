@@ -1,0 +1,22 @@
+- hosts: localhost
+- hosts: localhost
+  connection: local
+
+  tasks:
+  - name: Create resource group
+    azure.azcollection.azure_rm_resourcegroup:
+      name: ansibleLab
+      location: eastasia
+  
+  - name: Create virtual network
+    azure.azcollection.azure_rm_virtualnetwork:
+      resource_group: ansibleLab
+      name: ansibleVnet
+      address_prefixes: "172.16.0.0/16"
+  
+  - name: Create subnet
+    azure.azcollection.azure_rm_subnet:
+      resource_group: ansibleLab
+      name: workload-subnet
+      address_prefixes: "172.16.1.0/24"
+      virtual_network: ansibleVnet
