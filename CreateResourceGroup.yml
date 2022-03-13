@@ -10,13 +10,14 @@
   - name: Create virtual network
     azure.azcollection.azure_rm_virtualnetwork:
       resource_group: ansibleLab
-      name: ansibleVnet
+      name: ansible-vnet
       address_prefixes: "172.16.0.0/16"
   
   - name: Create subnet
     azure.azcollection.azure_rm_subnet:
       resource_group: ansibleLab
+      virtual_network_name: ansible-vnet
       name: workload-subnet
-      address_prefixes: "172.16.1.0/24"
-      virtual_network: ansibleVnet
+      address_prefix_cidr: "172.16.1.0/24"
+      
  
