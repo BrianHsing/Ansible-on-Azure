@@ -1,6 +1,0 @@
-steps:
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: '$(agent.builddirectory)'
-    Contents: 'ansible-on-azure/Azure-Resorce-Manager/*.yml'
-    TargetFolder: '$(build.artifactstagingdirectory)'
