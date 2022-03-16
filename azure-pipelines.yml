@@ -1,18 +1,6 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
-trigger:
-- master
-
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
 - task: CopyFiles@2
   inputs:
-    SourceFolder: 'Copy Files to: $(build.artifactstagingdirectory)'
-    Contents: '**/*.yml'
+    SourceFolder: '$(agent.builddirectory)'
+    Contents: 'ansible-on-azure/Azure-Resorce-Manager/*.yml'
     TargetFolder: '$(build.artifactstagingdirectory)'
-
