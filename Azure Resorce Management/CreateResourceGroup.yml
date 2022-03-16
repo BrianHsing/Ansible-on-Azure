@@ -1,0 +1,68 @@
+- hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Create resource group
+      azure.azcollection.azure_rm_resourcegroup:
+        name: ansibleLab
+        location: eastasia
+
+    - name: Create virtual network
+      azure.azcollection.azure_rm_virtualnetwork:
+        resource_group: ansibleLab
+        name: ansible-vnet
+        address_prefixes: "172.16.0.0/16"
+
+    - name: Create Netwrok Security group
+      azure.azcollection.azure_rm_securitygroup:
+        resource_group: ansibleLab
+        name: ansible-vnet-nsg
+        rules:
+          - name: 'AllowSSH'
+            protocol: Tcp
+            destination_port_range: 22
+            access: Allow
+            priority: 101
+            direction: Inbound
+
+    - name: Create subnet
+      azure.azcollection.azure_rm_subnet:
+        resource_group: ansibleLab
+        virtual_network_name: ansible-vnet
+        name: workload-subnet
+        address_prefix_cidr: "172.16.1.0/24"
+        security_group: ansible-vnet-nsg
+
+    - name: Create Public IP address
+      azure.azcollection.azure_rm_publicipaddress:
+        resource_group: ansibleLab
+        name: ansible-controller-pip
+        allocation_method: static
+    
+    - name: Create a network interface using existing security group and public IP
+      azure.azcollection.azure_rm_networkinterface:
+        name: ansible-controller-nic
+        resource_group: ansibleLab
+        virtual_network: ansible-vnet
+        subnet_name: workload-subnet
+        security_group: ansible-vnet-nsg
+        ip_configurations:
+          - name: ipconfig1
+            public_ip_address_name: ansible-controller-pip
+            primary: True
+
+    - name: Create VM
+      azure.azcollection.azure_rm_virtualmachine:
+        resource_group: ansibleLab
+        name: ansible-controller
+        vm_size: Standard_D2s_v3
+        managed_disk_type: Standard_LRS
+        admin_username: "ansible"
+        admin_password: "ansible@123"
+        network_interfaces: ansible-controller-nic
+        image:
+          offer: CentOS
+          publisher: OpenLogic
+          sku: "7.5"
+          version: latest
+        
