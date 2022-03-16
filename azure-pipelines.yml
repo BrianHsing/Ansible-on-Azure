@@ -12,7 +12,7 @@ pool:
 steps:
 
 - task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
   inputs:
-    SourceFolder: '$(agent.builddirectory)'
-    Contents: '**/*.yml'
+    Contents: 'ansible-on-azure\Azure-Resorce-Manager\*.yml'
     TargetFolder: '$(build.artifactstagingdirectory)'
