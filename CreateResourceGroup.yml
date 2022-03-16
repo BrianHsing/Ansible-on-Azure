@@ -17,6 +17,13 @@
       azure.azcollection.azure_rm_securitygroup:
         resource_group: ansibleLab
         name: ansible-vnet-nsg
+        rules:
+          - name: 'AllowSSH'
+            protocol: Tcp
+            destination_port_range: 22
+            access: Allow
+            priority: 101
+            direction: Inbound
 
     - name: Create subnet
       azure.azcollection.azure_rm_subnet:
@@ -31,6 +38,31 @@
         resource_group: ansibleLab
         name: ansible-controller-pip
         allocation_method: static
+    
+    - name: Create a network interface using existing security group and public IP
+      azure.azcollection.azure_rm_networkinterface:
+        name: ansible-controller-nic
+        resource_group: ansibleLab
+        virtual_network: ansible-vnet
+        subnet_name: workload-subnet
+        security_group: ansible-vnet-nsg
+        ip_configurations:
+          - name: ipconfig1
+            public_ip_address_name: ansible-controller-pip
+            primary: True
 
-
-
+    - name: Create VM
+      azure.azcollection.azure_rm_virtualmachine:
+        resource_group: ansibleLab
+        name: ansible-controller
+        vm_size: Standard_D2s_v3
+        managed_disk_type: Standard_LRS
+        admin_username: "ansible"
+        admin_password: "ansible@123"
+        network_interfaces: ansible-controller-nic
+        image:
+          offer: CentOS
+          publisher: OpenLogic
+          sku: "7.5"
+          version: latest
+        
